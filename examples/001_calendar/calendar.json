@@ -1,0 +1,123 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": {
+    "name": "databricks_query"
+  },
+  "width": "container",
+  "height": "container",
+  "config": {
+    "autosize": {
+      "type": "fit",
+      "contains": "padding"
+    },
+    "view": {
+      "fill": "#080808",
+      "stroke": null
+    }
+  },
+  "transform": [
+    {
+      "calculate": "ceil((toDate(datum.calendar_date)-datetime(year(now()),month(now()),date(now())))/86400000)",
+      "as": "dft"
+    },
+    {
+      "calculate": "datum.is_black_friday ? 'black_friday' : datum.dft === 0 ? 'today' : datum.is_weekend ? (datum.dft < 0 ? 'past_weekend' : 'future_weekend') : (datum.dft < 0 ? 'past' : 'future')",
+      "as": "day_type"
+    }
+  ],
+  "mark": {
+    "type": "rect",
+    "stroke": "#080808",
+    "strokeWidth": 1,
+    "cornerRadius": 25
+  },
+  "encoding": {
+    "x": {
+      "field": "iso_week_num",
+      "type": "ordinal",
+      "title": "ISO Week",
+      "axis": {
+        "labelAngle": 0,
+        "labelFontSize": 8,
+        "labelColor": "#555555",
+        "titleFontSize": 9,
+        "titleColor": "#555555",
+        "grid": false,
+        "domain": false,
+        "ticks": false
+      }
+    },
+    "y": {
+      "field": "iso_dow_num",
+      "type": "ordinal",
+      "sort": "descending",
+      "title": null,
+      "axis": {
+        "labelExpr": "['','Mon','Tue','Wed','Thu','Fri','Sat','Sun'][datum.value]",
+        "labelFontSize": 10,
+        "labelColor": "#888888",
+        "grid": false,
+        "domain": false,
+        "ticks": false
+      }
+    },
+    "color": {
+      "field": "day_type",
+      "type": "nominal",
+      "scale": {
+        "domain": [
+          "past",
+          "past_weekend",
+          "today",
+          "future",
+          "future_weekend",
+          "black_friday"
+        ],
+        "range": [
+          "#111111",
+          "#24313A",
+          "#E8D44D",
+          "#3A3A3A",
+          "#66737D",
+          "#FF6B00"
+        ]
+      },
+      "legend": {
+        "title": null,
+        "labelColor": "#888888",
+        "orient": "bottom",
+        "direction": "horizontal",
+        "symbolStrokeColor": "transparent",
+        "symbolSize": 120
+      }
+    },
+    "tooltip": [
+      {
+        "field": "calendar_date",
+        "type": "temporal",
+        "title": "Date",
+        "format": "%b %d"
+      },
+      {
+        "field": "dow_name",
+        "type": "nominal",
+        "title": "Day"
+      },
+      {
+        "field": "month_name",
+        "type": "nominal",
+        "title": "Month"
+      },
+      {
+        "field": "is_weekend",
+        "type": "nominal",
+        "title": "Weekend"
+      },
+      {
+        "field": "day_type",
+        "type": "nominal",
+        "title": "Type"
+      }
+    ]
+  }
+}

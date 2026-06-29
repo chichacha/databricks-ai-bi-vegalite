@@ -1,0 +1,146 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": {
+    "name": "databricks_query"
+  },
+  "width": "container",
+  "height": 180,
+  "config": {
+    "autosize": {
+      "type": "fit",
+      "contains": "padding"
+    },
+    "view": {
+      "stroke": null,
+      "fill": "#0F0F0F"
+    }
+  },
+  "transform": [
+    {
+      "calculate": "ceil((datetime(2026,10,27)-now())/86400000)",
+      "as": "days_left"
+    },
+    {
+      "calculate": "datum.days_left > 0 ? ''+datum.days_left : 'TODAY!'",
+      "as": "countdown_num"
+    },
+    {
+      "calculate": "'🛍️  COUNTDOWN TO BLACK FRIDAY  🛒'",
+      "as": "top_label"
+    },
+    {
+      "calculate": "datum.days_left > 0 ? 'days remaining  ·  November 27, 2026' : '🎉 Happy Shopping!'",
+      "as": "bottom_label"
+    },
+    {
+      "calculate": "datum.days_left > 0 ? (331 - datum.days_left) / 331 : 1",
+      "as": "progress_pct"
+    }
+  ],
+  "layer": [
+    {
+      "mark": {
+        "type": "rect",
+        "color": "#2A2A2A"
+      },
+      "encoding": {
+        "x": {
+          "value": 0
+        },
+        "x2": {
+          "expr": "width"
+        },
+        "y": {
+          "value": 0
+        },
+        "y2": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "rect",
+        "color": "#FF6B00"
+      },
+      "encoding": {
+        "x": {
+          "value": 0
+        },
+        "x2": {
+          "expr": "width * datum.progress_pct"
+        },
+        "y": {
+          "value": 0
+        },
+        "y2": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "fontSize": 18,
+        "fontWeight": "bold",
+        "color": "#FF6B00",
+        "align": "center",
+        "baseline": "middle",
+        "letterSpacing": 2
+      },
+      "encoding": {
+        "x": {
+          "expr": "width/2"
+        },
+        "y": {
+          "value": 30
+        },
+        "text": {
+          "field": "top_label"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "fontSize": 70,
+        "fontWeight": "bold",
+        "color": "#FFD700",
+        "align": "center",
+        "baseline": "middle",
+        "font": "Orbitron"
+      },
+      "encoding": {
+        "x": {
+          "expr": "width/2"
+        },
+        "y": {
+          "value": 107
+        },
+        "text": {
+          "field": "countdown_num"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "fontSize": 20,
+        "color": "#555555",
+        "align": "center",
+        "baseline": "middle"
+      },
+      "encoding": {
+        "x": {
+          "expr": "width/2"
+        },
+        "y": {
+          "value": 162
+        },
+        "text": {
+          "field": "bottom_label"
+        }
+      }
+    }
+  ]
+}
